@@ -1,0 +1,16 @@
+Tests ran at 20 May 04 29 PM
+
+0 tests passed out of 8 tests.
+
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_get_method_given_student_id_return_student_object: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_get_method_given_score_return_student_object: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_get_method_given_name_when_multiple_objects_matched_raise_exception: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_get_method_given_invalid_student_id_raise_exception: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_get_method_given_invalid_field_raise_exception: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_delete_method_given_valid_student_id_deletes_record: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_save_method_given_record_does_not_present_in_db_then_create_record: failed
+test_5b9e5ed3-b70f-47aa-9fab-57e45ef6353d_db012.py::test_save_method_given_record_present_in_db_then_update_record: failed
+
+
+Errors: 0 errors
+

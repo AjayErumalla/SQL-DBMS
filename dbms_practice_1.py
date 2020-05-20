@@ -211,3 +211,116 @@ FROM (
     GROUP BY course_id
 ) AS course_averages
 WHERE student_averages.student_avg_score > course_averages.course_avg_score;
+
+SELECT student_details.student_id,student_details.no_of_course,course_details.course_id,course_details.no_of_student
+FROM(
+SELECT student_id, COUNT(course_id) AS no_of_course 
+    FROM Enrollment 
+    GROUP BY student_id)
+    AS student_details JOIN (
+SELECT course_id,COUNT(student_id) AS no_of_student
+FROM Enrollment
+GROUP BY course_id)
+AS course_details
+WHERE no_of_course > 3;
+
+SELECT student_id, AVG(score) as avg_score
+FROM Enrollment 
+GROUP BY student_id 
+HAVING AVG(score)>(SELECT AVG(score)
+                   FROM Enrollment);
+                   
+SELECT student_id, AVG(score) as avg_score
+FROM Enrollment 
+GROUP BY student_id 
+HAVING AVG(score) < (SELECT AVG(score)
+FROM Enrollment WHERE year = 2015);
+
+
+SELECT COUNT(player_of_match) FROM Match
+INNER JOIN MatchCaptain ON MatchCaptain.match_no = Match.match_no
+INNER JOIN MatchCaptain ON MatchCaptain.captain = Player.player_id
+INNER JOIN Match ON Player.player_id = Match.player_of_match;
+  
+  
+SELECT COUNT(player_id) FROM Player
+INNER JOIN MatchCaptain ON MatchCaptain.captain = Player.player_id
+INNER JOIN Match ON Player.player_id = Match.player_of_match;
+
+
+"""
+# Q5 = """SELECT COUNT(player_id) AS no_players FROM Player 
+# INNER JOIN Match ON Player.player_id = Match.player_of_match AND Player.player_id = MatchCaptain.captain
+# INNER JOIN MatchCaptain ON MatchCaptain.match_no = Match.match_no;"""
+
+Q5 = """SELECT COUNT(player_id) FROM Player
+INNER JOIN MatchCaptain ON MatchCaptain.captain = Player.player_id AND MatchCaptain.match_no = Match.match_no
+INNER JOIN Match ON Player.player_id = Match.player_of_match;
+SELECT COUNT(DISTINCT player_id) FROM Player                                                                             
+INNER JOIN MatchCaptain ON MatchCaptain.captain = Player.player_id AND MatchCaptain.match_no = Match.match_no
+INNER JOIN Match ON Player.player_id = Match.player_of_match;
+"""
+
+SELECT DISTINCT(captain) FROM MatchCaptain
+WHERE NOT EXISTS(SELECT player_id FROM Player INNER JOIN MatchCaptain ON Player.player_id = MatchCaptain.captain
+INNER JOIN MatchCaptain ON MatchCaptain.match_no = Match.match_no
+INNER JOIN Match ON Match.player_of_match = Player.player_id);
+#INNER JOIN Player ON Player.player_id = MatchCaptain.captain
+
+
+Q6 = """SELECT DISTINCT MatchCaptain.captain 
+FROM MatchCaptain 
+WHERE NOT EXISTS(SELECT player_id FROM Player INNER JOIN Match ON Player.player_id = Match.player_of_match
+INNER JOIN MatchCaptain ON MatchCaptain.match_no = Match.match_no);
+"""
+#WHERE EXISTS(SELECT player_id FROM Player INNER JOIN MatchCaptain ON Player.player_id = MatchCaptain.captain)AND 
+Q6 = """SELECT DISTINCT MatchCaptain.captain 
+FROM MatchCaptain 
+WHERE EXISTS(SELECT player_id FROM Player INNER JOIN MatchCaptain ON Player.player_id = MatchCaptain.captain)
+AND WHERE NOT EXISTS(SELECT player_id FROM Player INNER JOIN Match ON Player.player_id = Match.player_of_match
+INNER JOIN MatchCaptain ON MatchCaptain.match_no = Match.match_no);
+"""
+"""
+n=int(input())
+fib=[0,1]
+f1=0
+f2=1
+for i in range(n):
+    f3=f1+f2
+    
+    f1=f2
+    f2=f3
+    fib.append(f3)
+
+print(fib[
+
+include <stdio.h>
+int main() {
+    int n, reversedN = 0, remainder, originalN;
+    scanf("%d", &n);
+    m= n;
+    while (n != 0) {
+        remainder = n % 10;
+        reversedN = reversedN * 10 + remainder;
+        n /= 10;
+    }
+
+      if (originalN == reversedN)
+        printf("%d is a palindrome.", originalN);
+    else
+        printf("%d is not a palindrome.", originalN);
+    return 0;
+}
+
+
+select a.id,a.fname,count(distinct(md.did) from actor a inner join cast c on a.id=  =c.pid
+inner join  moviedirector md on md.mid = c.mid group by a.id;
+
+word = "qwesd werd qsdfrd ijuhg okmiq"
+z = word.split()
+
+for w in z:
+if w[0]=='q' and w[-1]= d"
+print(w)
+
+select c.date,count(c.name) from country c where c.date = 12 group by c.date having c.death > 5000
