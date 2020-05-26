@@ -1,0 +1,120 @@
+Q1 = "SELECT AVG(age) FROM Player"
+
+Q2 = "SELECT match_no,play_date FROM Match WHERE audience > 50000 ORDER BY match_no ASC;"
+
+Q3 = "SELECT team_id, COUNT(win_lose) AS win FROM MatchTeamDetails WHERE win_lose = 'W' GROUP BY team_id ORDER BY win DESC;"
+
+Q4 = """SELECT match_no,play_date FROM Match
+WHERE stop1_sec > (SELECT AVG(stop1_sec) 
+FROM Match)
+ORDER BY match_no DESC;"""
+
+Q5 = """SELECT MatchCaptain.match_no,`Team`.name,`Player`.name 
+FROM MatchCaptain
+INNER JOIN Team ON `Team`.team_id = `MatchCaptain`.team_id 
+INNER JOIN Player ON `MatchCaptain`.captain = `Player`.player_id 
+INNER JOIN Match ON `MatchCaptain`.match_no = `Match`.match_no
+ORDER BY Match.match_no ASC, Team.name ASC;"""
+
+Q6 = """SELECT `Match`.match_no,`Player`.name,`Player`.jersey_no
+FROM Match 
+INNER JOIN Player ON `Match`.player_of_match = `Player`.player_id
+ORDER BY `Match`.match_no ASC;"""
+
+Q7 = """SELECT `Team`.name,
+(SELECT AVG(age) FROM Player WHERE Team.team_id = Player.team_id) AS avg_age 
+FROM Team WHERE avg_age >26;"""
+
+Q8 = """SELECT `Player`.name,`Player`.jersey_no,`Player`.age,COUNT(`GoalDetails`.goal_id) AS no_of_goals
+FROM GoalDetails INNER JOIN Player ON `Player`.player_id = `GoalDetails`.player_id 
+GROUP BY Player.player_id HAVING Player.age <= 27 ORDER BY no_of_goals DESC,Player.name ASC;"""
+
+Q9 = """SELECT team_id, COUNT(goal_id)*100.0/(SELECT COUNT(goal_id) FROM GoalDetails)
+FROM GoalDetails
+GROUP BY team_id
+HAVING COUNT(goal_id) != 0;"""
+
+Q10 = """SELECT AVG(avg_scores)
+FROM (SELECT COUNT(goal_id) AS avg_scores
+FROM Team JOIN GoalDetails ON Team.team_id = `GoalDetails`.team_id
+GROUP BY `Team`.team_id) AS scores;"""
+
+Q11 = """SELECT DISTINCT(Player.player_id),name,date_of_birth
+FROM Player
+WHERE NOT EXISTS (
+    SELECT goal_id FROM GoalDetails WHERE `GoalDetails`.player_id = `Player`.player_id)
+    ORDER BY player_id ASC;"""
+
+Q12 = """SELECT `T`.name, `M`.match_no, audience AS audience, 
+audience - (SELECT AVG(audience) FROM Match 
+JOIN MatchTeamDetails ON `Match`.match_no = `MatchTeamDetails`.match_no AND T.team_id = `MatchTeamDetails`.team_id)
+FROM MatchTeamDetails JOIN Match AS M ON `MatchTeamDetails`.match_no = `M`.match_no
+JOIN Team AS T ON `MatchTeamDetails`.team_id = `T`.team_id
+ORDER BY `M`.match_no ASC;"""
+
+
+Q13= """SELECT mc.captain, COUNT(mc.match_no) AS no_of_wins FROM matchcaptain mc 
+INNER JOIN matchteamdetails mtd ON mtd.match_no = mc.match_no
+INNER JOIN Player p ON p.player_id = mc.captain
+WHERE win_lose = 'W' and p.team_id= mtd.team_id group by mc.captain ORDER BY no_of_wins DESC;"""
+
+
+# SELECT DISTINCT(Player.player_id),name,date_of_birth 
+# FROM Player
+# INNER JOIN GoalDetails ON `Player`.player_id = `GoalDetails`.player_id
+# WHERE COUNT(`GoalDetails`.goal_id) = 0 ORDER BY  Player.player_id ASC;
+# SELECT MAX(avg_score) as max_avg_score
+
+# FROM (
+# -- Here we make our sub-query:
+#     SELECT student_id,
+#     AVG(score) AS avg_score
+#     FROM Enrollment
+#     GROUP BY course_id
+# -- End of the sub-query
+# ) AS enroll;
+
+# SELECT id, name, age 
+# FROM Student 
+# WHERE age > (
+#     SELECT AVG(age) 
+#     FROM Student
+# );
+
+# Q5 = """SELECT `Match`.match_no,`Team`.name,`Player`.name FROM Player
+# INNER JOIN Match ON match_no = player_id INNER JOIN Team ON Team.team_id = player_id 
+# ORDER BY match_no ASC, Team.name ASC;
+# """
+# Q11 = """SELECT DISTINCT(Player.player_id),name,date_of_birth 
+# FROM Player
+# INNER JOIN GoalDetails ON `Player`.player_id = `GoalDetails`.player_id
+# GROUP BY GoalDetails.player_id 
+# WHERE COUNT(`GoalDetails`.goal_id) = 0 ORDER BY  Player.player_id ASC;  """
+
+# SELECT id, name, age, age - (
+#         SELECT AVG(age) 
+#         FROM Student
+#     ) AS age_varianc
+e  
+# FROM Student;
+
+Tests ran at 11 May 11 32 AM
+
+12 tests passed out of 12 tests.
+
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q1: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q2: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q3: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q4: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q5: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q6: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q7: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q8: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q9: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q10: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q11: passed
+test_f20bc228-56c9-4d42-811d-c7b334fffb35_db009.py::test_q12: passed
+
+
+Errors: 0 errors
+
