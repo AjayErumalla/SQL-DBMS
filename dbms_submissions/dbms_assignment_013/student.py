@@ -101,6 +101,7 @@ class Student:
 			x = " and ".join(tuple(l)) 
 			query= "select * from student where "+x
 			objj=read_data(query)
+			
 			for i in range(len(objj)):
 				c=Student(objj[i][1],objj[i][2],objj[i][3])
 				c.student_id=objj[i][0]
