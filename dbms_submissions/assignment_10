@@ -1,0 +1,114 @@
+Q1 = """SELECT P.player_id,P.team_id,P.jersey_no,P.name,P.date_of_birth,P.age 
+FROM Player P INNER JOIN MatchCaptain MC ON MC.team_id = P.team_id 
+LEFT JOIN GoalDetails GD ON GD.player_id = P.player_id
+WHERE P.player_id = MC.captain AND GD.goal_id is NULL;"""
+
+# Q1 = """SELECT P.player_id,P.team_id,P.jersey_no,P.name,P.date_of_birth FROM Player AS P 
+# INNER JOIN MatchCaptain AS MC ON P.player_id = MC.captain
+# WHERE NOT EXISTS (SELECT player_id FROM GoalDetails AS GD
+# WHERE MC.captain = GD.player_id);"""
+
+# Q1 = """SELECT * FROM Player AS P
+# WHERE EXISTS(SELECT P.player_id FROM MatchCaptain AS MC
+# WHERE P.player_id = MC.captain)
+# AND NOT EXISTS (
+#     SELECT captain FROM MatchCaptain AS MC 
+#     INNER JOIN GoalDetails AS GD ON MC.captain = GD.player_id WHERE P.player_id = GD.player_id);"""
+    
+Q2 = """SELECT team_id, COUNT(captain) AS no_of_games FROM MatchCaptain GROUP BY team_id;"""
+
+Q3 = """SELECT team_id, COUNT(goal_id)*1.0/(SELECT COUNT(player_id) FROM Player GROUP BY team_id) AS avg_goal_score
+FROM GoalDetails GROUP BY team_id;"""
+
+Q4 = """SELECT player_id AS captain,COUNT(Player_id)
+FROM Player INNER JOIN MatchCaptain ON Player.player_id = MatchCaptain.captain GROUP BY Player.player_id;"""
+
+Q5 = """SELECT COUNT( DISTINCT MC.captain) AS no_players 
+FROM MatchCaptain AS MC
+INNER JOIN Match AS M ON M.match_no = MC.match_no
+WHERE MC.captain = M.player_of_match;"""
+
+Q6 = """SELECT DISTINCT MC.captain FROM MatchCaptain AS MC
+WHERE EXISTS(SELECT M.match_no FROM Match AS M
+WHERE MC.match_no = M.match_no)
+AND NOT EXISTS(SELECT M.match_no FROM Match AS M
+WHERE MC.captain = M.player_of_match);"""
+
+Q7 = """SELECT strftime('%m', play_date)AS month,COUNT(match_no) AS no_of_matches FROM Match
+GROUP BY month ORDER BY no_of_matches DESC;"""
+
+Q8 = """SELECT Player.jersey_no,COUNT(MC.captain) AS no_captains FROM MatchCaptain AS MC
+INNER JOIN Player ON player_id = MC.captain
+GROUP BY jersey_no ORDER BY no_captains DESC, jersey_no DESC;"""
+
+Q9 = """SELECT Player.player_id,AVG(audience) AS avg_audience FROM Match
+INNER JOIN MatchTeamDetails ON MatchTeamDetails.match_no = Match.match_no
+INNER JOIN Player ON Player.team_id = MatchTeamDetails.team_id
+GROUP BY Player.player_id ORDER BY avg_audience DESC, player_id DESC;"""
+
+Q10 = """SELECT team_id,AVG(age) FROM Player
+GROUP BY team_id;"""
+
+Q11 = """SELECT AVG(age) AS avg_age_of_captains FROM Player
+INNER JOIN MatchCaptain ON Player.player_id = MatchCaptain.captain;"""
+
+Q12 = """SELECT strftime('%m', date_of_birth) AS month, COUNT(player_id) AS no_of_players FROM Player
+GROUP BY month ORDER BY no_of_players DESC, month DESC;"""
+
+Q13 = """SELECT MatchCaptain.captain, COUNT(MatchTeamDetails.match_no) AS no_of_wins FROM MatchTeamDetails 
+INNER JOIN MatchCaptain ON `MatchTeamDetails`.match_no = `MatchCaptain`.match_no
+INNER JOIN Player ON Player.player_id = MatchCaptain.captain
+WHERE win_lose = 'W' and Player.team_id= MatchTeamDetails.team_id
+GROUP BY MatchCaptain.captain ORDER BY no_of_wins DESC;"""
+
+# SELECT id, name, age, (
+#         SELECT AVG(score) 
+#         FROM Enrollment 
+#         WHERE s.id=student_id
+#     ) AS avg_score 
+# FROM Student s;
+
+
+# SELECT MAX(avg_score) as max_avg_score
+# FROM (
+# -- Here we make our sub-query:
+#     SELECT student_id,
+#     AVG(score) AS avg_score
+#     FROM Enrollment
+#     GROUP BY course_id
+# -- End of the sub-query
+# ) AS enroll;
+
+# Q13 = """SELECT MatchCaptain.captain, COUNT(MatchTeamDetails.match_no) AS no_of_wins FROM MatchTeamDetails 
+# INNER JOIN MatchCaptain ON `MatchTeamDetails`.match_no = `MatchCaptain`.match_no
+# INNER JOIN Player ON Player.player_id = MatchCaptain.captain
+# WHERE win_lose = 'W' group by MatchCaptain.captain ORDER BY no_of_wins DESC;"""
+
+# Q13= """SELECT MC.captain, COUNT(MC.match_no) AS no_of_wins FROM MatchCaptain MC 
+# INNER JOIN MatchTeamDetails MTD ON MTD.match_no = MC.match_no
+# INNER JOIN Player P ON P.player_id = MC.captain
+# WHERE win_lose = 'W' and P.team_id= MTD.team_id GROUP BY MC.captain ORDER BY no_of_wins DESC;"""
+
+
+
+Tests ran at 12 May 09 36 PM
+
+13 tests passed out of 13 tests.
+
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q1: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q2: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q3: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q4: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q5: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q6: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q7: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q8: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q9: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q10: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q11: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q12: passed
+test_b77df1f4-c9a1-4564-b329-b036add51b3f_db010.py::test_q13: passed
+
+
+Errors: 0 errors
+
