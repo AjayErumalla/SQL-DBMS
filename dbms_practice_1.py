@@ -324,3 +324,400 @@ if w[0]=='q' and w[-1]= d"
 print(w)
 
 select c.date,count(c.name) from country c where c.date = 12 group by c.date having c.death > 5000
+
+
+class DoesNotExist(Exception):
+	pass
+class Student:
+	def __init__(self, name, age, score):
+		self.name = name
+		self.student_id = None
+		self.age = age
+		self.score = score
+		
+	@staticmethod
+	def get(student_id=0,name="",score=-1,age=0):
+		if student_id != 0:
+			record = read_data(f"select * from Student where student_id={student_id}")
+		elif name != "":
+			record = read_data(f"select * from Student where name={name}")
+		elif score != -1:
+			record = read_data(f"select * from Student where score={score}")
+		elif age != 0:
+			record = read_data(f"select * from Student where age={age}")
+		
+		if len(record)==0:
+			raise Exception('DoesNotExist')
+		elif len(record)>1:
+			raise Exception('MultipleObjectsReturned')
+		else:
+			output = Student(record[0][1],record[0][2],record[0][3])
+			output.student_id = record[0][0]
+			return output
+		
+	def save(self):
+		write_data(f"insert into Student (name,age,score) values (\'{self.name}\',{self.age},{self.score})")        
+		
+	def delete(self):
+		pass
+
+	def filter(self):
+		pass
+
+def write_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("students.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute("PRAGMA foreign_keys=on;") 
+	crsr.execute(sql_query) 
+	connection.commit() 
+	connection.close()
+
+def read_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("students.sqlite3")
+	crsr = connection.cursor()
+	crsr.execute(sql_query) 
+	ans= crsr.fetchall()  
+	connection.close() 
+	return ans
+
+
+# class Student:
+#     def __init__(self,name, age, score):
+#         self.student_id = None
+#         self.name = name
+#         self.age = age
+#         self.score = score
+        
+    
+#         import sqlite3
+#         conn = sqlite3.connect('studentdb.sqlite3')
+#         c = conn.cursor()
+#         c.execute("PRAGMA foreign_keys=on;")
+#     #c.execute('''CREATE TABLE student_details(student_id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(200),age INT,score INT)''')
+#     #c.execute("INSERT INTO student_details(name,age,score) VALUES ('Naveen',33,93),('Jan',31,90)")
+#         conn.commit()
+        
+#         def get(self):
+#             c.execute('SELECT * FROM student_details')
+#             data = c.fetchall()
+#             print(data)
+            
+#         c.close()
+#         conn.close()
+
+# # def get():
+# #     c.execute('SELECT * FROM student_details')
+# #     data = c.fetchall()
+# #     print(data)
+    
+# #student_1 = Student.get(student_id = 1)   
+    
+# #get()
+ 
+class DoesNotExist(Exception):
+     pass
+
+ class MultipleObjectsReturned(Exception):
+     pass
+
+ class Student:
+     def __init__(self,name=None,age=None,score=None):
+         self.name=name
+         self.age=age
+         self.student_id=None
+         self.score=score
+
+     @classmethod
+     def get(cls,student_id=None,name=None,age=None,score=None):
+         import sqlite3
+         conn=sqlite3.connect("students.sqlite3")
+         crsr=conn.cursor()
+         if(age!=None):
+             sql_query="Select * from student where age={}".format(age)
+         if(student_id!=None):
+             sql_query="Select * from student where student_id={}".format(student_id)
+         if(score!=None):
+             sql_query="Select * from student where score={}".format(score)
+         if(name!=None):
+             sql_query="Select * from student where name='{}'".format(name)
+         crsr.execute(sql_query) 
+         ans=crsr.fetchall()
+         if(len(ans)==0):
+             raise DoesNotExist
+         elif(len(ans)>1):
+             raise MultipleObjectsReturned
+         obj=cls(ans[0][1],ans[0][2],ans[0][3])
+         obj.student_id=ans[0][0]
+         conn.close()
+         return obj
+
+     def delete(self):
+         import sqlite3
+         conn=sqlite3.connect("students.sqlite3")
+         crsr=conn.cursor()
+         crsr.execute("PRAGMA foreign_keys=on;") 
+         sql_query="DELETE FROM student where student_id={}".format(self.student_id)
+         crsr.execute(sql_query)
+         conn.commit()
+         conn.close()
+
+     def save(self):
+         import sqlite3
+         conn=sqlite3.connect("students.sqlite3")
+         crsr=conn.cursor()
+         crsr.execute("PRAGMA foreign_keys=on;")
+         if(self.student_id==None):
+             sql_query="insert into student(student_id,name,age,score) values(null,'{}',{},{})".format(self.name,self.age,self.score)
+             crsr.execute(sql_query)
+             self.student_id=crsr.lastrowid
+         else:
+             sql_query="Update student set name='{}',age={},score={} where student_id={}".format(self.name,self.age,self.score,self.student_id)
+             crsr.execute(sql_query)
+         conn.commit()
+         conn.close()
+         
+"""class DoesNotExist(Exception):
+	pass
+class Student:
+	def __init__(self, name, age, score):
+		self.name = name
+		self.student_id = None
+		self.age = age
+		self.score = score
+		
+	@staticmethod
+	def get(student_id=0,name="",score=-1,age=0):
+		if student_id != 0:
+			record = read_data(f"select * from Student where student_id={student_id}")
+		elif name != "":
+			record = read_data(f"select * from Student where name={name}")
+		elif score != -1:
+			record = read_data(f"select * from Student where score={score}")
+		elif age != 0:
+			record = read_data(f"select * from Student where age={age}")
+		
+		if len(record)==0:
+			raise Exception('DoesNotExist')
+		elif len(record)>1:
+			raise Exception('MultipleObjectsReturned')
+		else:
+			output = Student(record[0][1],record[0][2],record[0][3])
+			output.student_id = record[0][0]
+			return output
+		
+	def save(self):
+		write_data(f"insert into Student (name,age,score) values (\'{self.name}\',{self.age},{self.score})")        
+		
+	def delete(self):
+		pass
+
+	def filter(self):
+		pass
+
+def write_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("dbms/dbms_resources/students_db.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute("PRAGMA foreign_keys=on;") 
+	crsr.execute(sql_query) 
+	connection.commit() 
+	connection.close()
+
+def read_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("dbms/dbms_resources/students_db.sqlite3")
+	crsr = connection.cursor()
+	crsr.execute(sql_query) 
+	ans= crsr.fetchall()  
+	connection.close() 
+	return ans
+	
+	
+"""
+
+def write_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("students.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute("PRAGMA foreign_keys=on;") 
+	crsr.execute(sql_query) 
+	connection.commit() 
+	connection.close()
+
+def read_data(sql_query):
+	import sqlite3 
+	connection = sqlite3.connect("students.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute(sql_query) 
+	ans= crsr.fetchall()  
+	connection.close() 
+	return ans
+class DoesNotExist(Exception):
+	pass
+class MultipleObjectsReturned(Exception):
+	pass
+class InvalidField(Exception):
+	pass
+class Student:
+	#student_id=0
+	
+	def __init__(self,name,age, score):
+	    self.name = name
+	    self.age = age
+	    self.student_id=None
+	    self.score = score
+	    
+
+	@classmethod
+	def get(cls,**key):
+		for k,v in key.items():
+			cls.a=k
+			cls.b=v
+		if cls.a!='student_id' and cls.a!='name' and cls.a!='age' and cls.a!='score':
+			raise InvalidField
+		
+		sql_query="select * from student where {}='{}'".format(cls.a,cls.b)
+		ans=read_data(sql_query)
+		if len(ans)==0:
+			raise DoesNotExist
+		if len(ans)>1:
+			raise MultipleObjectsReturned
+		
+		ans=tuple(ans[0])
+		obj=Student(ans[1],ans[2],ans[3])
+		obj.student_id=ans[0]
+		return obj
+	@classmethod
+	def delete(cls):
+		sql_query="delete from student where {}={}".format(cls.a,cls.b)
+		write_data(sql_query)
+
+	def save(self):
+		if self.student_id is None:
+			query="insert into student(name,age,score)values('{}',{},{})".format(self.name,self.age,self.score)
+			write_data(query)
+			q1='select student_id from student where name="{}" and age={} and score={}'.format(self.name,self.age,self.score)
+			r1=read_data(q1)
+			self.student_id=r1[0][0] 
+			
+		else:
+			query1="update student set name='{}',age={},score={} where student_id={}".format(self.name,self.age,self.score,self.b)
+			write_data(query1)
+""""""
+
+
+class DoesNotExist(Exception):
+    pass
+class MultipleObjectsReturned(Exception):
+    pass
+class InvalidField(Exception):
+    pass
+
+class Student:
+
+    def __init__(self,name, age, score):
+        self.name = name
+        self.student_id = None
+        self.age = age
+        self.score = score
+    
+    def __repr__(self):
+        return "Student(student_id={0}, name={1}, age={2}, score={3})".format(self.student_id,self.name,self.age,self.score)
+    
+    
+    def delete(self):
+        sql_query='delete from student where student_id={}'.format(self.student_id)
+        write_data(sql_query)
+    
+    
+    def save(self):
+        if self.student_id is None:
+            query="insert into student(name,age,score) values ('{}',{},{})".format(self.name,self.age,self.score)
+            write_data(query)
+            q1='select student_id from student where name="{}" and age={} and score={}'.format(self.name,self.age,self.score)
+            a=read_data(q1)   
+            self.student_id=a[0][0]
+        else:
+            sql_query="update student set student_id={},name='{}',age={},score={} where student_id={}".format(self.student_id,self.name,self.age,self.score,self.b)
+            write_data(sql_query) 
+            
+    @classmethod
+    def get(cls,**kid):
+        for x,y in kid.items():
+            cls.a=x
+            cls.b=y
+            if str(x) not in ('name','age','score','student_id'):
+                raise InvalidField 
+        query="select * from student where {} = '{}'".format(cls.a,cls.b)
+        obj=read_data(query)
+        if len(obj)>1:
+            raise MultipleObjectsReturned
+        elif len(obj)==0:
+            raise DoesNotExist
+        elif len(obj)==1:
+            c=Student(obj[0][1],obj[0][2],obj[0][3])
+            c.student_id=obj[0][0]
+            return c
+     
+    @classmethod
+    def filter(cls,**kid):
+        cls.li=[]
+        cls.operator={'lt':'<','lte':'<=','gt':'>','gte':'>=','neq':'!=','in':'in','contain':''}
+        
+        
+        if(len(kid))>=1:
+            l=[]
+            for x,y in kid.items():
+                    cls.a=x
+                    cls.b=y
+                    
+                    field=cls.a
+                    field=field.split('__')
+                    if field[0] not in ('name','age','score','student_id'):
+                            raise InvalidField 
+            
+                    if(len(field))==1:
+                        query=" {}='{}'".format(cls.a,cls.b)
+                    elif field[1]=='contains':
+                        query=" {} like '%{}%'".format(field[0],cls.b)
+                    elif field[1]=='in':
+                        query=" {} {} {}".format(field[0],cls.operator[field[1]],tuple(cls.b))
+                    else:    
+                        query="{} {} '{}'".format(field[0],cls.operator[field[1]],cls.b)
+                
+                    l.append(query)
+                    
+            x = " and ".join(tuple(l))       
+            query= "select * from student where "+x
+            
+            
+        #print(query)            
+        obj=read_data(query)
+        for i in range(len(obj)):
+            c=Student(obj[i][1],obj[i][2],obj[i][3])
+            c.student_id=obj[i][0]
+            cls.li.append(c)
+        return cls.li    
+    	            
+        
+    
+        
+def write_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("selected_students.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute("PRAGMA foreign_keys=on;") 
+	crsr.execute(sql_query) 
+	connection.commit() 
+	connection.close()
+
+def read_data(sql_query):
+	import sqlite3
+	connection = sqlite3.connect("selected_students.sqlite3")
+	crsr = connection.cursor() 
+	crsr.execute(sql_query) 
+	ans= crsr.fetchall()  
+	connection.close() 
+	return ans
